@@ -78,7 +78,7 @@ def main():
                     if match:
                         thought = match.group(1).strip()
                         response_text = match.group(2).strip()
-                        st.text(thought)
+                        st.code(thought)
                         st.write(response_text)
                     else:
                         st.write(response)

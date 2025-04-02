@@ -74,7 +74,7 @@ def main():
             with st.spinner("Thinking..."):
                 response = get_response(st.session_state.messages)
                 if response:
-                    match = re.match(r"<think>(.*?)</think>(.*)", response.choices[0].message.content, re.DOTALL)
+                    match = re.match(r"<think>(.*?)</think>(.*)", response, re.DOTALL)
                     if match:
                         thought = match.group(1).strip()
                         response_text = match.group(2).strip()

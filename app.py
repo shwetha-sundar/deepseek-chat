@@ -80,9 +80,10 @@ def main():
                         response_text = match.group(2).strip()
                         st.code(thought)
                         st.write(response_text)
+                        st.session_state.messages.append({"role": "assistant", "content": response_text})
                     else:
                         st.write(response)
-                    st.session_state.messages.append({"role": "assistant", "content": response})
+                        st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 if __name__ == "__main__":

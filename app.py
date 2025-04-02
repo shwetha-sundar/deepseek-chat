@@ -5,7 +5,7 @@ st.title("Deep Seek Web Chatbot")
 st.write("This is a simple chatbot that demonstrates the use of Azure OpenAI's Chat Completions API.")
 st.write("You can ask any question related to the topic of your choice, and the chatbot will respond accordingly.")
 
-query = st.text_area("Enter your question here:", height=100)
+query = st.text_area("Enter your question here:")
 
 full_response = ""
 

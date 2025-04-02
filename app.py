@@ -2,6 +2,7 @@ import streamlit as st
 from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
+import re
 
 # session state for chat history
 if "messages" not in st.session_state:
@@ -73,9 +74,15 @@ def main():
             with st.spinner("Thinking..."):
                 response = get_response(st.session_state.messages)
                 if response:
-                    st.write(response)
-                    st.session_state.messages.append(
-                        {"role": "assistant", "content": response})
+                    match = re.match(r"<think>(.*?)</think>(.*)", response.choices[0].message.content, re.DOTALL)
+                    if match:
+                        thought = match.group(1).strip()
+                        response_text = match.group(2).strip()
+                        st.text(thought)
+                        st.write(response_text)
+                    else:
+                        st.write(response)
+                    st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 if __name__ == "__main__":

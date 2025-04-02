@@ -1,35 +1,20 @@
-from azure.ai.inference import ChatCompletionsClient
-from azure.ai.inference.models import SystemMessage, UserMessage
-from azure.core.credentials import AzureKeyCredential
 import streamlit as st
+import app
 
-endpoint = st.secrets["endpoint"]
-model_name = st.secrets["model_name"]
-token = st.secrets["token"]
+st.title("Deep Seek Web Chatbot")
+st.write("This is a simple chatbot that demonstrates the use of Azure OpenAI's Chat Completions API.")
+st.write("You can ask any question related to the topic of your choice, and the chatbot will respond accordingly.")
 
-client = ChatCompletionsClient(
-    endpoint=endpoint,
-    credential=AzureKeyCredential(token),
-)
+query = st.text_area("Enter your question here:", height=100)
 
-# response = client.complete(
-#     messages=[
-#         SystemMessage(content="You are a helpful assistant."),
-#         UserMessage(content="I am going to Paris, what should I see?")
-#     ],
-#     max_tokens=1000,
-#     model=model_name
-# )
+full_response = ""
 
-# print(response.choices[0].message.content)
+if st.button("Submit"):
+    with st.spinner("Generating response..."):
+        response_container = st.empty()
+        for update in app.get_response(query):
+            if update.choices and update.choices[0].delta and update.choices[0].delta.content:
+                full_response += update.choices[0].delta.content
+                response_container.markdown(full_response)
 
-def get_response(prompt):
-    response = client.complete(
-        stream=True,
-        messages=[
-            UserMessage(content=prompt)
-        ],
-        max_tokens=1000,
-        model=model_name
-    )
-    return response
+        app.client.close()

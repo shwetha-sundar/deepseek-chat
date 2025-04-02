@@ -3,6 +3,12 @@ from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
 
+# session state for chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hello! How can I help you today?"}
+    ]
+
 def get_response(prompt):
     try:
         endpoint = st.secrets["endpoint"]

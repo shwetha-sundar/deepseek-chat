@@ -9,7 +9,7 @@ if "messages" not in st.session_state:
         {"role": "assistant", "content": "Hello! How can I help you today?"}
     ]
 
-def get_response(prompt):
+def get_response(messages: list) -> str:
     try:
         endpoint = st.secrets["endpoint"]
         model_name = st.secrets["model_name"]
@@ -22,7 +22,8 @@ def get_response(prompt):
 
         response = client.complete(
             messages=[
-                UserMessage(content=prompt)
+                {"role": "system", "content": "You are a helpful assistant"},
+                *messages
             ],
             max_tokens=1000,
             model=model_name

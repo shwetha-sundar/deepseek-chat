@@ -34,8 +34,18 @@ def get_response(messages: list) -> str:
         st.error(f"Error occurred: {str(e)}")
         return ""
 
+def extract_think_content(response):
+    think_pattern = r'<think>(.*?)</think>'
+    think_match = re.search(think_pattern, response, re.DOTALL)
+    
+    if think_match:
+        think_content = think_match.group(1).strip()
+        main_response = re.sub(think_pattern, '', response, flags=re.DOTALL).strip()
+        return think_content, main_response
+    return None, response
+
 def main():
-    st.title('🤖 DeepSeek Chatbot')
+    st.title('🐳💬 DeepSeek R1 Chatbot')
 
     with st.sidebar:
         st.header("📚 User Guide")
@@ -44,14 +54,7 @@ def main():
         1. **Start Chatting**: Type your message in the input box at the bottom of the chat
         2. **Continue Conversation**: The chatbot remembers your conversation, so you can ask follow-up questions
         3. **View History**: Scroll up to see your chat history
-        
-        ### Tips
-        - Be specific with your questions
-        - Ask follow-up questions for clarification
-        - Use the reset button to start a fresh conversation
-        
-        ### Need Help?
-        If you encounter any issues, try resetting the chat using the button below.
+        4. **Reset Chat**: If you encounter any issues, try resetting the chat using the button below.
         """)
 
         if st.button("Reset Chat"):
@@ -74,16 +77,12 @@ def main():
             with st.spinner("Thinking..."):
                 response = get_response(st.session_state.messages)
                 if response:
-                    match = re.match(r"<think>(.*?)</think>(.*)", response, re.DOTALL)
-                    if match:
-                        thought = match.group(1).strip()
-                        response_text = match.group(2).strip()
-                        st.code(thought)
-                        st.write(response_text)
-                        st.session_state.messages.append({"role": "assistant", "content": response_text})
-                    else:
-                        st.write(response)
-                        st.session_state.messages.append({"role": "assistant", "content": response})
+                    think_content, main_response = extract_think_content(response)
+                    if think_content:
+                        st.write(think_content)
+                    
+                    st.markdown(main_response)
+                    st.session_state.messages.append({"role": "assistant", "content": main_response})
 
 
 if __name__ == "__main__":

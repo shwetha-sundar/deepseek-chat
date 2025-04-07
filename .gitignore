@@ -1,16 +1,20 @@
 # Virtual Environment
 .env
 .venv
+pyenv
 env/
 venv/
+pyenv/
 ENV/
 env.bak/
 venv.bak/
 .python-version
+__pycache__
 
 # IDE
 .idea/
 .vscode/
+.devcontainer
 *.swp
 *.swo
 .DS_Store
